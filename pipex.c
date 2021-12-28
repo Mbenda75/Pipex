@@ -6,7 +6,7 @@
 /*   By: benmoham <benmoham@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/21 18:30:07 by benmoham          #+#    #+#             */
-/*   Updated: 2021/12/23 17:56:09 by benmoham         ###   ########.fr       */
+/*   Updated: 2021/12/28 18:07:41 by benmoham         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+
 
 static char	*ft_strnndup(const char *s1, int c)
 {
@@ -85,26 +88,45 @@ char	**ft_split(const char *str, char c)
 	tab[k] = 0;
 	return (tab);
 }
-void	parse_pipe(char **av)
+char	*ft_strcat(char *dest, const char *src)
+{
+	int	i;
+	int	j;
+	char *tmp;
+	
+	i = 0;
+	j = 0;
+	tmp = malloc(sizeof(char) * (strlen(dest) + strlen(src))+ 1);
+	while (dest[i])
+	{
+		tmp[i] = dest[i];
+		i++;
+	}
+	tmp[i++] = '/';
+	while (src[j])
+	{
+		tmp[i] = src[j];
+		i++;
+		j++;
+	}
+	tmp[i] = '\0';
+	return (tmp);
+}
+
+char	*get_path(char **av, char **env)
 {
 	
-}
-int main(int ac, char **av, char **env)
-{
-    int	p;
+	char	*goodpath;
+	int		p;
 	char	**s;
-	char	**s2;
-    size_t i;
+    size_t	i;
 	
     i = 5;
 	p = 0;
     while (env[p])
     {
-        if (strncmp("PATH=", env[p], i) == 0)
-        {	   
-			printf("trouve Path = %s\n", env[p]);
+        if (strncmp("PATH=\n", env[p], i) == 0)   
             break ;
-        }
         p++;
     }
     s = ft_split(env[p], ':');
@@ -113,12 +135,54 @@ int main(int ac, char **av, char **env)
     while (s[p])
     {
 		if (strncmp("/usr/bin", s[p], i) == 0)
-		{
-        	printf("Good PAth = %s\n", s[p]);
 			break;
-		}
 		p++;
     }
-    s2 = ft_split(av[1], ' ');
-    execve("/usr/bin/", s2, NULL); 
+	goodpath = ft_strcat(s[p], av[1]);
+	return(goodpath);
+}
+int main(int ac, char **av, char **env)
+{
+	char *path;
+	int	pid;
+	int	pid2;
+	int pfd[2];
+	char	**goodarg;
+	
+    if (pipe(pfd) == -1)
+    {
+       printf("pipe failed\n");
+       return 1;
+    }
+	path = get_path(av, env);
+	if ((pid = fork()) == -1)
+    {
+      perror("fork failed");
+      return 1;
+    }
+   	if (pid == 0)
+	{
+		goodarg = ft_split(av[3], ' ');
+		dup2(pfd[1], STDOUT_FILENO);  
+		close(pfd[0]);
+		close(pfd[1]);
+		printf("goodarg2 == %s", goodarg[0]);
+		execve(path, goodarg, env);
+	}
+ 	if ((pid2 = fork()) == -1)
+    {
+      perror("fork failed");
+      return 1;
+    }
+	if (pid2 == 0)
+	{
+		goodarg = ft_split(av[3], ' ');
+		dup2(pfd[0], STDIN_FILENO);
+		close(pfd[0]);
+		close(pfd[1]);
+		printf("goodarg2 == %s", goodarg[0]);
+		execve(path, goodarg, env);
+	} 
+	waitpid(pid, NULL, 0);
+	waitpid(pid2, NULL, 0); 
 }
