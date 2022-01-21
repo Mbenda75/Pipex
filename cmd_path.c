@@ -6,7 +6,7 @@
 /*   By: benmoham <benmoham@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/20 12:48:05 by benmoham          #+#    #+#             */
-/*   Updated: 2022/01/21 17:43:22 by benmoham         ###   ########.fr       */
+/*   Updated: 2022/01/21 19:03:01 by benmoham         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ char	*ft_strcat(char *dest, const char *src)
 
 	i = 0;
 	j = 0;
-	tmp = malloc(sizeof(char) * (strlen(dest) + strlen(src)) + 1);
+	tmp = malloc(sizeof(char) * (strlen(dest) + strlen(src)) + 2);
 	while (dest[i])
 	{
 		tmp[i] = dest[i];
@@ -76,5 +76,7 @@ char	*get_path(char **av, char **env, int cmd)
 	else if (cmd == 2)
 		array_cmd = ft_split(av[3], ' ');
 	path = ft_strcat(array_path[index_path], array_cmd[0]);
+	free_str(array_path);
+	free_str(array_cmd);
 	return (path);
 }

@@ -6,7 +6,7 @@
 /*   By: benmoham <benmoham@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/20 12:43:15 by benmoham          #+#    #+#             */
-/*   Updated: 2022/01/21 16:11:11 by benmoham         ###   ########.fr       */
+/*   Updated: 2022/01/21 18:12:10 by benmoham         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,4 +34,5 @@ int         pipex(int infile, int outfile ,char **av, char **env);
 void        exec_cmd(char **av, char **env, int *pfd, int file_fd);
 int	        ft_strncmp(const char *s1, const char *s2, size_t n);
 void	    dup_close_fd(char	*path, int file_fd, bool index_pfd, int *pfd);
+void        free_str(char **s);
 #endif
