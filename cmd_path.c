@@ -6,7 +6,7 @@
 /*   By: benmoham <benmoham@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/20 12:48:05 by benmoham          #+#    #+#             */
-/*   Updated: 2022/01/20 12:48:30 by benmoham         ###   ########.fr       */
+/*   Updated: 2022/01/21 13:18:06 by benmoham         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,34 +39,34 @@ char	*ft_strcat(char *dest, const char *src)
 
 char	*get_path(char **av, char **env, int cmd)
 {
+	char	*path;
+	int		index_path;
+	char	**array_path;
+	char	**array_cmd;
+	size_t	size;
 
-	char	*goodpath;
-	int		p;
-	char	**s;
-	char	**str;
-	size_t	y;
-
-	y = 5;
-	p = 0;
-	while (env[p])
+	size = 5;
+	index_path = 0;
+	while (env[index_path])
 	{
-		if (strncmp("PATH=\n", env[p], y) == 0)   
+		if (ft_strncmp("PATH=\n", env[index_path], size) == 0)   
 			break ;
-		p++;
+		index_path++;
 	}
-	s = ft_split(env[p], ':');
-	y = 8;
-	p = 0;
-	while (s[p])
+	array_path = ft_split(env[index_path], ':');
+	size = 8;
+	index_path = 0;
+	while (array_path[index_path])
 	{
-		if (strncmp("/usr/bin", s[p], y) == 0)
+		if (ft_strncmp("/usr/bin", array_path[index_path], size) == 0)
+		
 			break;
-		p++;
+		index_path++;
 	}
 	if (cmd == 1)
-		str = ft_split(av[2], ' ');
+		array_cmd = ft_split(av[2], ' ');
 	else if (cmd == 2)
-		str = ft_split(av[3], ' ');
-	goodpath = ft_strcat(s[p], str[0]);
-	return(goodpath);
+		array_cmd = ft_split(av[3], ' ');
+	path = ft_strcat(array_path[index_path], array_cmd[0]);
+	return(path);
 }

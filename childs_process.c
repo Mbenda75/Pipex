@@ -6,36 +6,37 @@
 /*   By: benmoham <benmoham@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/07 15:53:43 by benmoham          #+#    #+#             */
-/*   Updated: 2022/01/20 15:14:09 by benmoham         ###   ########.fr       */
+/*   Updated: 2022/01/21 13:18:33 by benmoham         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-void	child2_process(int *pfd, char **env, char **av, int outfile)
+void  exec_cmd(char **av, char **env, int *pfd, int child_nb, int file_fd)
 {
 	char **cmdarg;
 	char *path;
-	
-	cmdarg = ft_split(av[3], ' ');
-	path = get_path(av, env, 2);	
-	close(pfd[1]);
-	dup2(outfile, STDOUT_FILENO);
-	dup2(pfd[0], STDIN_FILENO);
-	close(pfd[0]);
-	execve(path, cmdarg, env);
-}
+	bool index_pfd;
+	int index_av;
 
-void	child_process(char **av, char **env, int infile, int *pfd)
-{
-	char **cmdarg;
-	char *path;
-	
-  	path = get_path(av, env, 1);
-	cmdarg = ft_split(av[2], ' ');
-	dup2(infile, STDIN_FILENO);
-	close(pfd[0]);
-	dup2(pfd[1], STDOUT_FILENO);
-	close(pfd[1]);
-	execve(path, cmdarg, env);
+    if (child_nb == 1)
+	{
+        index_pfd = true; // So we get index 1
+        index_av = 2;// Argv[3]
+    }
+	else if (child_nb == 2)
+	{
+        index_pfd = false; // So get get index 0
+        index_av = 3 ;// Argv[2]
+    }
+    cmdarg = ft_split(av[index_av], ' ');
+    path = get_path(av, env, child_nb);
+	if (access(path, F_OK) == -1)
+		printf("cmd not found\n");
+	dup2(file_fd, !index_pfd);
+	close(pfd[!index_pfd]); // Invert so we close stdin
+	dup2(pfd[index_pfd], index_pfd);
+	close(pfd[index_pfd]); // Close stdout
+	if (access(path, F_OK) == 0)
+		execve(path, cmdarg, env);
 }

@@ -6,7 +6,7 @@
 /*   By: benmoham <benmoham@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/20 12:43:15 by benmoham          #+#    #+#             */
-/*   Updated: 2022/01/20 14:02:02 by benmoham         ###   ########.fr       */
+/*   Updated: 2022/01/21 13:15:50 by benmoham         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,18 +19,19 @@
 #include <string.h>
 #include <sys/types.h>
 #include <sys/wait.h>
-# include <sys/uio.h>
+#include <sys/uio.h>
 #include <sys/stat.h>
 #include <fcntl.h>
+#include <stdbool.h>
 
 char	    *ft_strcat(char *dest, const char *src);
 char	    *get_path(char **av, char **env, int cmd);
 char	    **ft_split(const char *str, char c);
 static char	*ft_strnndup(const char *s1, int c);
 static int	ft_counting(const char *str, char c);
-void	    child2_process(int *pfd, char **env, char **av, int outfile);
-void	    child_process(char **av, char **env, int infile, int *pfd);
 void        close_fd(int *pfd, int outfile, int infile);
 int         pipex(int infile, int outfile ,char **av, char **env);
-
+void        exec_cmd(char **av, char **env, int *pfd, int child_nb, int file_fd);
+int         create_child(char **av, char **env, int *pfd, int infile, int outfile);
+int	        ft_strncmp(const char *s1, const char *s2, size_t n);
 #endif
