@@ -6,7 +6,7 @@
 /*   By: benmoham <benmoham@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/20 12:48:05 by benmoham          #+#    #+#             */
-/*   Updated: 2022/01/21 13:18:06 by benmoham         ###   ########.fr       */
+/*   Updated: 2022/01/21 17:43:22 by benmoham         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,13 +14,13 @@
 
 char	*ft_strcat(char *dest, const char *src)
 {
-	int	i;
-	int	j;
-	char *tmp;
+	int		i;
+	int		j;
+	char	*tmp;
 
 	i = 0;
 	j = 0;
-	tmp = malloc(sizeof(char) * (strlen(dest) + strlen(src))+ 1);
+	tmp = malloc(sizeof(char) * (strlen(dest) + strlen(src)) + 1);
 	while (dest[i])
 	{
 		tmp[i] = dest[i];
@@ -37,6 +37,22 @@ char	*ft_strcat(char *dest, const char *src)
 	return (tmp);
 }
 
+int	search_path(char **env)
+{
+	size_t	size;
+	int		index_path;
+
+	size = 5;
+	index_path = 0;
+	while (env[index_path])
+	{
+		if (ft_strncmp("PATH=\n", env[index_path], size) == 0)
+			break ;
+		index_path++;
+	}
+	return (index_path);
+}
+
 char	*get_path(char **av, char **env, int cmd)
 {
 	char	*path;
@@ -45,22 +61,14 @@ char	*get_path(char **av, char **env, int cmd)
 	char	**array_cmd;
 	size_t	size;
 
-	size = 5;
-	index_path = 0;
-	while (env[index_path])
-	{
-		if (ft_strncmp("PATH=\n", env[index_path], size) == 0)   
-			break ;
-		index_path++;
-	}
+	index_path = search_path(env);
 	array_path = ft_split(env[index_path], ':');
 	size = 8;
 	index_path = 0;
 	while (array_path[index_path])
 	{
 		if (ft_strncmp("/usr/bin", array_path[index_path], size) == 0)
-		
-			break;
+			break ;
 		index_path++;
 	}
 	if (cmd == 1)
@@ -68,5 +76,5 @@ char	*get_path(char **av, char **env, int cmd)
 	else if (cmd == 2)
 		array_cmd = ft_split(av[3], ' ');
 	path = ft_strcat(array_path[index_path], array_cmd[0]);
-	return(path);
+	return (path);
 }
