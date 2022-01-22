@@ -6,14 +6,11 @@
 /*   By: benmoham <benmoham@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/22 13:47:33 by benmoham          #+#    #+#             */
-/*   Updated: 2022/01/20 12:42:39 by benmoham         ###   ########.fr       */
+/*   Updated: 2022/01/22 11:51:12 by benmoham         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <unistd.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include "pipex.h"
 
 static char	*ft_strnndup(const char *s1, int c)
 {

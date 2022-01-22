@@ -6,7 +6,7 @@
 /*   By: benmoham <benmoham@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/21 18:30:07 by benmoham          #+#    #+#             */
-/*   Updated: 2022/01/21 18:50:56 by benmoham         ###   ########.fr       */
+/*   Updated: 2022/01/22 11:55:26 by benmoham         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,7 @@ int	pipex(int infile, int outfile, char **av, char **env)
 	exec_cmd(av, env, pfd, infile);
 	close_fd(pfd, outfile, infile);
 	waitpid(child, NULL, 0);
+	return (0);
 }
 
 int	main(int ac, char **av, char **env)

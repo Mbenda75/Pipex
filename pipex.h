@@ -6,7 +6,7 @@
 /*   By: benmoham <benmoham@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/20 12:43:15 by benmoham          #+#    #+#             */
-/*   Updated: 2022/01/22 11:36:46 by benmoham         ###   ########.fr       */
+/*   Updated: 2022/01/22 11:56:38 by benmoham         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,10 +25,8 @@
 # include <stdbool.h>
 
 char		*ft_strcat(char *dest, const char *src);
-char		*get_path(char **av, char **env, int cmd);
 char		**ft_split(const char *str, char c);
-static char	*ft_strnndup(const char *s1, int c);
-static int	ft_counting(const char *str, char c);
+char		*get_path(char **av, char **env, int cmd);
 void		dup_close_fd(char *path, int file_fd, bool index_pfd, int *pfd);
 void		free_str(char **s);
 void		close_fd(int *pfd, int outfile, int infile);
