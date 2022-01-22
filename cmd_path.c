@@ -61,23 +61,26 @@ char	*get_path(char **av, char **env, int cmd)
 	int		index_path;
 	char	**array_path;
 	char	**array_cmd;
-	size_t	size;
+	//size_t	size;
 
 	index_path = search_path(env);
 	array_path = ft_split(env[index_path], ':');
-	size = 8;
+	//size = 8;
 	index_path = 0;
+	if (cmd == 0)
+		array_cmd = ft_split(av[2], ' ');
+	else if (cmd == 1)
+		array_cmd = ft_split(av[3], ' ');
 	while (array_path[index_path])
 	{
-		if (ft_strncmp("/usr/bin", array_path[index_path], size) == 0)
+		path = ft_strcat(array_path[index_path], array_cmd[0]);
+		if (access(path, F_OK) == 0)
 			break ;
+		//if (ft_strncmp(array_path[index_path], array_path[index_path], size) == 0)
+		//	break ;
 		index_path++;
 	}
-	if (cmd == 1)
-		array_cmd = ft_split(av[2], ' ');
-	else if (cmd == 2)
-		array_cmd = ft_split(av[3], ' ');
-	path = ft_strcat(array_path[index_path], array_cmd[0]);
+	
 	free_str(array_path);
 	free_str(array_cmd);
 	return (path);

@@ -22,19 +22,21 @@ int	ft_strlen(char *str)
 	return (i);
 }
 
-void	dup_andclose_fd(char *path, int file_fd, bool index_pfd, int *pfd, char **cmdarg)
+void	dup_andclose_fd(bool fork_nb, t_pipex pipex)
 {
-	if (access(path, F_OK) == -1)
+	printf("path = %s\n", pipex.path);
+	if (access(pipex.path, F_OK) == -1)
 	{
 		perror("command not found\n");
-		free_str(cmdarg);
-		free(path);
-		exit (1);
+		free_str(pipex.cmdarg);
+		free(pipex.path);
+		exit(1);
 	}
-	dup2(file_fd, !index_pfd);
-	close(pfd[!index_pfd]);
-	dup2(pfd[index_pfd], index_pfd);
-	close(pfd[index_pfd]);
+
+	dup2(pipex.fds[fork_nb], fork_nb); // 0 & 1
+	close(pipex.fds[fork_nb]);
+	dup2(pipex.fds[fork_nb + 2], !fork_nb);
+	close(pipex.fds[fork_nb]);
 }
 
 void	free_str(char **s)
@@ -50,30 +52,13 @@ void	free_str(char **s)
 	free(s);
 }
 
-void	exec_cmd(char **av, char **env, int *pfd, int file_fd)
-{
-	char	**cmdarg;
-	char	*path;
-	bool	index_pfd;
-	int		index_av;
-	int		cmd;
+void	exec_cmd(char **av, char **env, t_pipex pipex, int fork_nb)
+{	
+	pipex.cmdarg = ft_split(av[fork_nb + 2], ' ');
+	pipex.path = get_path(av, env, fork_nb);
+
+	dup_andclose_fd((bool)fork_nb, pipex);
 	
-	printf("fd file ===%d\n", file_fd);
-	if (file_fd == 3)
-	{
-		cmd = 1;
-		index_pfd = true;
-		index_av = 2;
-	}
-	else if (file_fd == 4)
-	{
-		cmd = 2;
-		index_pfd = false;
-		index_av = 3;
-	}
-	cmdarg = ft_split(av[index_av], ' ');
-	path = get_path(av, env, cmd);
-	dup_andclose_fd(path, file_fd, index_pfd, pfd, cmdarg);
-	if (access(path, F_OK) == 0)
-		execve(path, cmdarg, env);
+	if (access(pipex.path, F_OK) == 0)
+		execve(pipex.path, pipex.cmdarg, env);
 }
