@@ -6,7 +6,7 @@
 /*   By: benmoham <benmoham@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/21 18:30:07 by benmoham          #+#    #+#             */
-/*   Updated: 2022/01/22 11:55:26 by benmoham         ###   ########.fr       */
+/*   Updated: 2022/01/22 17:54:40 by benmoham         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@ void	close_fd(int *pfd, int outfile, int infile)
 int	pipex(int infile, int outfile, char **av, char **env)
 {
 	int	child;
+	int child2;
 	int	pfd[2];
 
 	if (pipe(pfd) == -1)
@@ -36,9 +37,20 @@ int	pipex(int infile, int outfile, char **av, char **env)
 		perror("fork failed");
 		return (-1);
 	}
-	if (child == 0)
+	if (child == 0){
+		printf("first1\n");
+		exec_cmd(av, env, pfd, infile);
+		}
+	child2 = fork();
+	if (child2 == -1)
+	{
+		perror("fork failed");
+		return (-1);
+	}
+	if (child2 == 0){
+		printf("first2\n");
 		exec_cmd(av, env, pfd, outfile);
-	exec_cmd(av, env, pfd, infile);
+	}
 	close_fd(pfd, outfile, infile);
 	waitpid(child, NULL, 0);
 	return (0);
@@ -48,7 +60,6 @@ int	main(int ac, char **av, char **env)
 {
 	int	infile;
 	int	outfile;
-
 	if (ac != 5)
 		exit(1);
 	infile = open(av[1], O_RDONLY);

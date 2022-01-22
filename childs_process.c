@@ -6,17 +6,29 @@
 /*   By: benmoham <benmoham@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/07 15:53:43 by benmoham          #+#    #+#             */
-/*   Updated: 2022/01/22 11:42:41 by benmoham         ###   ########.fr       */
+/*   Updated: 2022/01/22 17:37:21 by benmoham         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-void	dup_andclose_fd(char *path, int file_fd, bool index_pfd, int *pfd)
+int	ft_strlen(char *str)
+{
+	int i;
+
+	i = 0;
+	while (str[i])
+		i++;
+	return (i);
+}
+
+void	dup_andclose_fd(char *path, int file_fd, bool index_pfd, int *pfd, char **cmdarg)
 {
 	if (access(path, F_OK) == -1)
 	{
-		perror("cmd not found\n");
+		perror("command not found\n");
+		free_str(cmdarg);
+		free(path);
 		exit (1);
 	}
 	dup2(file_fd, !index_pfd);
@@ -45,7 +57,8 @@ void	exec_cmd(char **av, char **env, int *pfd, int file_fd)
 	bool	index_pfd;
 	int		index_av;
 	int		cmd;
-
+	
+	printf("fd file ===%d\n", file_fd);
 	if (file_fd == 3)
 	{
 		cmd = 1;
@@ -60,9 +73,7 @@ void	exec_cmd(char **av, char **env, int *pfd, int file_fd)
 	}
 	cmdarg = ft_split(av[index_av], ' ');
 	path = get_path(av, env, cmd);
-	dup_andclose_fd(path, file_fd, index_pfd, pfd);
+	dup_andclose_fd(path, file_fd, index_pfd, pfd, cmdarg);
 	if (access(path, F_OK) == 0)
 		execve(path, cmdarg, env);
-	free_str(cmdarg);
-	free(path);
 }
