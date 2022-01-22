@@ -6,7 +6,7 @@
 /*   By: benmoham <benmoham@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/20 12:48:05 by benmoham          #+#    #+#             */
-/*   Updated: 2022/01/21 19:03:01 by benmoham         ###   ########.fr       */
+/*   Updated: 2022/01/22 10:45:30 by benmoham         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,8 @@ char	*ft_strcat(char *dest, const char *src)
 
 	i = 0;
 	j = 0;
+	if (!src || !dest)
+		exit(1);
 	tmp = malloc(sizeof(char) * (strlen(dest) + strlen(src)) + 2);
 	while (dest[i])
 	{
