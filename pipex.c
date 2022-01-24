@@ -6,7 +6,7 @@
 /*   By: benmoham <benmoham@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/21 18:30:07 by benmoham          #+#    #+#             */
-/*   Updated: 2022/01/22 17:54:40 by benmoham         ###   ########.fr       */
+/*   Updated: 2022/01/24 19:37:15 by benmoham         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,32 @@ void	close_fd(int *fds)
 	close(fds[3]);
 }
 
-void create_fds(char *infile_path, char *outfile_path, t_pipex *pipex) {
+
+void fork_routine(char **av, char **env, t_pipex pipex)
+{
+	int i;
+
+	i = 0;
+
+	while(i < 2) 
+	{
+		pipex.child = fork();
+		if (pipex.child == -1)
+		{
+			write(1, "fork failed\n", 13);
+			close_fd(pipex.fds);
+			exit (1);
+		}
+		if (pipex.child == 0)
+			exec_cmd(av, env, pipex, i);
+		i++;
+	}
+	close_fd(pipex.fds);
+	waitpid(pipex.child, NULL, 0);
+}
+
+void create_fds(char *infile_path, char *outfile_path, t_pipex *pipex) 
+{
 	int files[2];
 	int pfd[2];
 
@@ -28,32 +53,25 @@ void create_fds(char *infile_path, char *outfile_path, t_pipex *pipex) {
 	files[1] = open(outfile_path, O_CREAT | O_RDWR | O_TRUNC, 0644);
 
 	if (files[0] < 0 || files[1] < 0)
-		printf("open failed\n");
+		exit(1);
 
 	if (pipe(pfd) == -1)
 	{
-		printf("pipe failed\n");
+		write(1, "pipe failed\n", 13);
+		exit (1);
 	}
-
-	pipex->fds[0] = files[0];
-	pipex->fds[1] = files[1];
-	pipex->fds[2] = pfd[0];
-	pipex->fds[3] = pfd[1];
+	pipex->fds[0] = pfd[0];
+	pipex->fds[1] = pfd[1];
+	pipex->fds[2] = files[0];
+	pipex->fds[3] = files[1];
 }
 
 int	ft_pipex(char **av, char **env)
 {
 	t_pipex pipex;
 
-	// fds[0] = infile
-	// fds[1] = outfile
-	// fds[2] = stdin_pipe
-	// fds[3] = stdout_pipe
-
-	create_fds(av[1], av[2], &pipex);
-
+	create_fds(av[1], av[4], &pipex);
 	fork_routine(av, env, pipex);
-	close_fd(pipex.fds);
 	return (0);
 }
 
@@ -61,37 +79,5 @@ int	main(int ac, char **av, char **env)
 {
 	if (ac != 5)
 		exit(1);
-
 	ft_pipex(av, env);
-}
-
-
-int fork_routine(char **av, char **env, t_pipex pipex) {
-	int i;
-
-	i = 0;
-
-	// if (file[0] < file[1])
-	// {
-	// 	cmd = 1;
-	// 	index_pfd = true;
-	// }
-	// else {
-	// 	cmd = 2;
-	// 	index_pfd = false;
-	// }
-
-	while(i < 2) {
-		pipex.child = fork();
-		if (pipex.child == -1)
-		{
-			perror("fork failed");
-			return (-1);
-		}
-		if (pipex.child == 0)
-			exec_cmd(av, env, pipex, i);
-		i++;
-		waitpid(pipex.child, NULL, 0);
-	}
-	return (1);
 }

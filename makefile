@@ -6,7 +6,7 @@
 #    By: benmoham <benmoham@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/01/22 11:48:55 by benmoham          #+#    #+#              #
-#    Updated: 2022/01/22 17:13:23 by benmoham         ###   ########.fr        #
+#    Updated: 2022/01/24 21:18:48 by benmoham         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -20,7 +20,7 @@ OBJS			= $(SRCS:.c=.o)
 
 NAME			= pipex
 
-CFLAGS			= -Wall -Wextra -Werror
+CFLAGS			= -Wall -Wextra -Werror -g
 
 RM				= rm -f
 
