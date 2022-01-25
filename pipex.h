@@ -6,7 +6,7 @@
 /*   By: benmoham <benmoham@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/20 12:43:15 by benmoham          #+#    #+#             */
-/*   Updated: 2022/01/24 19:55:13 by benmoham         ###   ########.fr       */
+/*   Updated: 2022/01/25 21:12:53 by benmoham         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ typedef struct s_pipex
 
 char		*ft_strcat(char *dest, char *src);
 char		**ft_split(const char *str, char c);
-char		*get_path(char **av, char **env, int cmd);
+char		*get_path(char **av, char **env, int cmd, t_pipex pipex);
 void	    dup_andclose_fd(bool fork_nb, t_pipex pipex);
 void		free_str(char **s);
 void	    close_fd(int *fds);
@@ -46,6 +46,7 @@ void	    exec_cmd(char **av, char **env, t_pipex pipex, int fork_nb);
 int			pipex(int infile, int outfile, char **av, char **env);
 int			ft_strncmp(const char *s1, const char *s2, size_t n);
 int			ft_strlen(char *str);
+void	cmd_notfound(t_pipex pipex);
 void        fork_routine(char **av, char **env, t_pipex pipex);
 
 #endif

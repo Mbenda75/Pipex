@@ -6,7 +6,7 @@
 /*   By: benmoham <benmoham@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/20 12:48:05 by benmoham          #+#    #+#             */
-/*   Updated: 2022/01/24 21:19:36 by benmoham         ###   ########.fr       */
+/*   Updated: 2022/01/25 21:12:28 by benmoham         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,12 +55,12 @@ int	search_path(char **env)
 	return (index_path);
 }
 
-char	*get_path(char **av, char **env, int cmd)
+char	*get_path(char **av, char **env, int cmd, t_pipex pipex)
 {
-	char	*path;
-	int		index_path;
-	char	**array_path;
-	char	**array_cmd;
+	char		*path;
+	int			index_path;
+	char		**array_path;
+	char		**array_cmd;
 
 	index_path = search_path(env);
 	array_path = ft_split(env[index_path], ':');
@@ -69,23 +69,52 @@ char	*get_path(char **av, char **env, int cmd)
 		array_cmd = ft_split(av[2], ' ');
 	else if (cmd == 1)
 		array_cmd = ft_split(av[3], ' ');
-	
+	if (array_cmd[0] == NULL)
+	{
+		free_str(array_cmd);
+		free_str(array_path);
+		cmd_notfound(pipex);
+	}
+	if ((access(array_cmd[0], F_OK) == 0 && av[cmd + 2][0] == '/')
+		|| ft_strncmp(av[cmd + 2], "./", 2) == 0)
+	{
+		if (av[cmd + 2][0] == '/' && ft_strlen(av[cmd + 2]) == 1)
+		{
+			free_str(array_path);
+			free_str(array_cmd);
+			cmd_notfound(pipex);
+		}
+		if (av[cmd + 2][0] == '.' && av[cmd + 2][1] == '/'
+			&& ft_strlen(av[cmd + 2]) == 2)
+		{
+			free_str(array_path);
+			free_str(array_cmd);
+			cmd_notfound(pipex);
+		}
+		else
+		{
+			array_cmd = ft_split(av[cmd + 2], ' ');
+			path = strdup(array_cmd[0]);
+			free_str(array_path);
+			free_str(array_cmd);
+			return (path);
+		}
+	}
 	while (array_path[index_path])
 	{
 		path = ft_strcat(array_path[index_path], array_cmd[0]);
 		if (!path)
-			break;
+			break ;
 		if (access(path, F_OK) == 0)
 		{
 			free_str(array_path);
 			free_str(array_cmd);
-			printf("path == %s\n", path);
-			return(path);				
+			return (path);
 		}
-		free(path);    
+		free(path);
 		index_path++;
 	}
 	free_str(array_path);
 	free_str(array_cmd);
-	return(NULL);
+	return (NULL);
 }
