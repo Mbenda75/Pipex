@@ -6,7 +6,7 @@
 #    By: benmoham <benmoham@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/01/22 11:48:55 by benmoham          #+#    #+#              #
-#    Updated: 2022/01/25 11:21:26 by benmoham         ###   ########.fr        #
+#    Updated: 2022/01/26 16:41:58 by benmoham         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,6 +15,8 @@ SRCS		=	childs_process.c		\
 				ft_split.c 	\
 				ft_strncmp.c	\
 				pipex.c	\
+				ft_strcat.c     \
+				ft_strdup.c     \
 			
 OBJS			= $(SRCS:.c=.o)
 

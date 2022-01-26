@@ -6,7 +6,7 @@
 /*   By: benmoham <benmoham@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/07 15:53:43 by benmoham          #+#    #+#             */
-/*   Updated: 2022/01/25 20:37:55 by benmoham         ###   ########.fr       */
+/*   Updated: 2022/01/26 19:07:39 by benmoham         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,10 @@ void	free_str(char **s)
 void	dup_andclose_fd(bool fork_nb, t_pipex pipex)
 {
 	if (access(pipex.path, F_OK) == -1)
+	{
+		free(pipex.path);
 		cmd_notfound(pipex);
+	}
 	if (fork_nb == 0)
 		dup2(pipex.fds[2], STDIN_FILENO);
 	else
@@ -58,9 +61,14 @@ void	dup_andclose_fd(bool fork_nb, t_pipex pipex)
 
 void	exec_cmd(char **av, char **env, t_pipex pipex, int fork_nb)
 {
+	if (read(1, av[2], O_RDONLY) == -1 || read(1, av[3], O_RDONLY) == -1)
+	{
+
+		printf("ici\n");
+		exit(1);
+	}
 	pipex.cmdarg = ft_split(av[fork_nb + 2], ' ');
 	pipex.path = get_path(av, env, fork_nb, pipex);
-	printf("path === %s\n", pipex.path);
 	if (pipex.path == NULL)
 		cmd_notfound(pipex);
 	dup_andclose_fd((bool)fork_nb, pipex);
